@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Pemesanan Makanan</title>
+    <style>
+        /* (CSS sama seperti contoh sebelumnya) */
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Aplikasi Pemesanan Makanan</h1>
+</div>
+
+<div class="container">
+    <h2>Formulir Pemesanan</h2>
+    <div class="form-group">
+        <label for="name">Nama:</label>
+        <input type="text" id="name" placeholder="Masukkan nama Anda">
+    </div>
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" placeholder="Masukkan email Anda">
+    </div>
+    <div class="form-group">
+        <label for="menu">Pilih Menu:</label>
+        <select id="menu">
+            <option value="nasi-goreng">Nasi Goreng</option>
+            <option value="mie-goreng">Mie Goreng</option>
+            <option value="sate-ayam">Sate Ayam</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="quantity">Jumlah:</label>
+        <input type="number" id="quantity" placeholder="Masukkan jumlah pesanan" min="1">
+    </div>
+    <button onclick="placeOrder()">Pesan Sekarang</button>
+    <button onclick="showOrders()">Lihat Pesanan</button>
+
+    <div class="order-summary" id="orderSummary"></div>
+    <div id="orderList" style="margin-top: 20px;"></div>
+</div>
+
+<script>
+    function placeOrder() {
+        var name = document.getElementById("name").value;
+        var email = document.getElementById("email").value;
+        var menu = document.getElementById("menu").value;
+        var quantity = document.getElementById("quantity").value;
+        var menuText = document.getElementById("menu").options[document.getElementById("menu").selectedIndex].text;
+
+        if(name && email && menu && quantity) {
+            var order = {
+                name: name,
+                email: email,
+                menu: menuText,
+                quantity: quantity
+            };
+
+            // Simpan pesanan ke localStorage
+            var orders = JSON.parse(localStorage.getItem('orders')) || [];
+            orders.push(order);
+            localStorage.setItem('orders', JSON.stringify(orders));
+
+            document.getElementById("orderSummary").innerHTML = `
+                <h3>Ringkasan Pesanan:</h3>
+                <p>Nama: ${name}</p>
+                <p>Email: ${email}</p>
+                <p>Menu: ${menuText}</p>
+                <p>Jumlah: ${quantity}</p>
+                <p>Pesanan berhasil disimpan!</p>
+            `;
+        } else {
+            alert("Harap lengkapi semua field.");
+        }
+    }
+
+    function showOrders() {
+        var orders = JSON.parse(localStorage.getItem('orders')) || [];
+        var orderList = document.getElementById("orderList");
+
+        if (orders.length > 0) {
+            var html = '<h3>Daftar Pesanan:</h3>';
+            html += '<ul>';
+            orders.forEach(function(order, index) {
+                html += `<li>Nama: ${order.name}, Email: ${order.email}, Menu: ${order.menu}, Jumlah: ${order.quantity}</li>`;
+            });
+            html += '</ul>';
+            orderList.innerHTML = html;
+        } else {
+            orderList.innerHTML = '<p>Belum ada pesanan yang dibuat.</p>';
+        }
+    }
+</script>
+
+</body>
+</html>
